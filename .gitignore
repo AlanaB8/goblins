@@ -16,7 +16,8 @@ Goblin Day.exe
 UnityCrashHandler32.exe
 UnityPlayer.dll
 UpgradeLog.htm
-*IndieMarc*
+Assets/*Marc.meta
+Assets/IndieMarc
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
