@@ -5,41 +5,29 @@ using UnityEngine.AI;
 
 public class Runner : MonoBehaviour
 {
-    public Camera cam;
     public NavMeshAgent agent;
     public GameObject destPrefab;
 
     private string DestinationTag = "RunnerDestination";
 
-    // Check For user Input, move NavMeshAgent, and update visual cues.
+    // Check for user Input, move NavMeshAgent, and update visual cues.
     void Update()
     {
+        Camera activeCamera = getActiveCamera();
+
         // https://docs.unity3d.com/Manual/nav-MoveToClickPoint.html
         if (Input.GetMouseButtonDown(0))
         {
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            Ray ray = activeCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit))
             {
-                /*
-                 * Understanding how to avoid/improve this If condition will be important. 
-                 * At the moment, ignoring input that intersects with the SearchBeam of the Enemies
-                 * results in a poor experience for the player. We need to come up with some feedback or
-                 * show their cursor moving around and providing more visual cues for when they are 
-                 * allowed to make a game movement.
-                 */
-                if (hit.collider.tag != "SearchBeam")
-                {
-                    agent.SetDestination(hit.point);
-
-                    RemoveExistingDestination();
-
-                    CreateDestinationMarker(hit);
-                }
+                agent.SetDestination(hit.point);
+                RemoveExistingDestination();
+                CreateDestinationMarker(hit);
             }
         }
-        
     }
 
     // Give the user a visual cute about where the Runner is going next.
@@ -63,6 +51,20 @@ public class Runner : MonoBehaviour
             Debug.Log("Runner Has Been Found");
             Application.Quit();
         }
+    }
+
+    // Return active Camera. Not sure why Camera.current wasn't working originally.
+    Camera getActiveCamera()
+    {
+        foreach(Camera cam in Camera.allCameras)
+        {
+            if (cam.gameObject.activeInHierarchy)
+            {
+                return cam;
+            }
+        }
+
+        return Camera.current;
     }
 
 }

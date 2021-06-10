@@ -37,10 +37,11 @@ public class Friend : MonoBehaviour
         if (following)
         {
             // Another attempt to make the group appear more natural.
-            float offsetX = Runner.transform.position.x + Random.Range(2.0f, 4.0f);
-            float offsetZ = Runner.transform.position.z + Random.Range(2.0f, 4.0f);
+            //float offsetX = Runner.transform.position.x + Random.Range(2.0f, 4.0f);
+            //float offsetZ = Runner.transform.position.z + Random.Range(2.0f, 4.0f);
+            //nav.SetDestination(new Vector3(offsetX, Runner.transform.position.y, offsetZ));
 
-            nav.SetDestination(new Vector3(offsetX, Runner.transform.position.y, offsetZ));
+            nav.SetDestination(Runner.transform.position);
         }
     }
 
