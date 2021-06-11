@@ -17,7 +17,7 @@ public class Runner : MonoBehaviour
     private string DestinationTag = "RunnerDestination";
 
     HttpClient client = new HttpClient();
-    string serviceURL = "https://services1.arcgis.com/BteRGjYsGtVEXzaX/arcgis/rest/services/Friend_Information/FeatureServer/0";
+    string serviceURL = "https://services1.arcgis.com/BteRGjYsGtVEXzaX/arcgis/rest/services/Runner_Information/FeatureServer/0";
 
     // Check for user Input, move NavMeshAgent, and update visual cues.
     void Update()
@@ -58,9 +58,15 @@ public class Runner : MonoBehaviour
         if (other.tag == "SearchBeam")
         {
             Debug.Log("Runner Has Been Found");
-            //await SendGameOver();
+            await SendGameOver();
             Application.Quit();
         }
+    }
+
+    // Keep the browser controller aware of where Digit is located.
+    async void LateUpdate()
+    {
+        // TODO - Send Position to ArcGIS Online
     }
 
     // Return active Camera. Not sure why Camera.current wasn't working originally.
@@ -79,22 +85,28 @@ public class Runner : MonoBehaviour
 
     async Task SendGameOver()
     {
-        Dictionary<string, Dictionary<string, string>> edit = new Dictionary<string, Dictionary<string, string>>
+        var attributes = new JObject();
+        attributes.Add("discovered", "True");
+        attributes.Add("OBJECTID", 1);
+
+        var obj = new JObject();
+        obj.Add("attributes", attributes);
+
+        JArray adds = new JArray(obj);
+        string addsString = JsonConvert.SerializeObject(adds);
+
+        IEnumerable<KeyValuePair<string, string>> payload = new List<KeyValuePair<string, string>>()
         {
-            {
-                "attributes",
-                new Dictionary<string, string>
-                {
-                    {"discovered", "True"}
-                }
-            }
+            new KeyValuePair<string, string>("updates", addsString),
+            new KeyValuePair<string, string>("f", "json")
         };
+        HttpContent content = new FormUrlEncodedContent(payload);
 
-
-        Debug.Log(JsonConvert.SerializeObject(edit));
-
-        // TODO = HTTP Post to applyEdits
-
+        HttpResponseMessage resp = await client.PostAsync($"{serviceURL}/applyEdits", content);
+        resp.EnsureSuccessStatusCode();
+        string respBody = await resp.Content.ReadAsStringAsync();
+        var results = JObject.Parse(respBody);
+        Debug.Log(respBody);
     }
 
 }
