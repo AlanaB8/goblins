@@ -4,51 +4,51 @@ using UnityEngine;
 
 public class CameraSwitch : MonoBehaviour
 {
-    public GameObject cameraA;
-    public GameObject cameraB;
-    public GameObject cameraC;
-    public GameObject cameraD;
+    public GameObject North;
+    public GameObject South;
+    public GameObject East;
+    public GameObject West;
 
     void Start()
     {
-        cameraA.SetActive(true);
-        cameraB.SetActive(false);
-        cameraC.SetActive(false);
-        cameraD.SetActive(false);
+        South.SetActive(true);
+        North.SetActive(false);
+        East.SetActive(false);
+        West.SetActive(false);
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            cameraA.SetActive(true);
-            cameraB.SetActive(false);
-            cameraC.SetActive(false);
-            cameraD.SetActive(false);
+            North.SetActive(false);
+            South.SetActive(false);
+            East.SetActive(false);
+            West.SetActive(true);
         }
 
         if (Input.GetKeyDown(KeyCode.W))
         {
-            cameraA.SetActive(false);
-            cameraB.SetActive(true);
-            cameraC.SetActive(false);
-            cameraD.SetActive(false);
+            North.SetActive(true);
+            South.SetActive(false);
+            East.SetActive(false);
+            West.SetActive(false);
         }
 
         if (Input.GetKeyDown(KeyCode.D))
         {
-            cameraA.SetActive(false);
-            cameraB.SetActive(false);
-            cameraC.SetActive(true);
-            cameraD.SetActive(false);
+            North.SetActive(false);
+            South.SetActive(false);
+            East.SetActive(true);
+            West.SetActive(false);
         }
 
         if (Input.GetKeyDown(KeyCode.S))
         {
-            cameraA.SetActive(false);
-            cameraB.SetActive(false);
-            cameraC.SetActive(false);
-            cameraD.SetActive(true);
+            North.SetActive(false);
+            South.SetActive(true);
+            East.SetActive(false);
+            West.SetActive(false);
         }
     }
 }
