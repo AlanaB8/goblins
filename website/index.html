@@ -10,7 +10,7 @@
 
     <style>
         body {
-            background-color: ivory;
+            background-color: whitesmoke;
         }
 
         #canvas {
@@ -32,7 +32,7 @@
         <input type="text"> </input>
         <button class="send">Send</button>
     </div>
-    <canvas id="canvas" width=400 height=400></canvas>
+    <canvas id="canvas" width=500 height=400></canvas>
 
 
     <script>
@@ -71,37 +71,41 @@
 
 
         // an array of objects that define different rectangles
-        const rects = [];
-        rects.push({
-            x: 75 - 15,
-            y: 50 - 15,
+        const gobs = [];
+        gobs.push({
+            x: 450,
+            y: 25,
             width: 30,
             height: 30,
-            fill: "#444444",
+            fill: "#ffff00",
+            canDrag: true,
             isDragging: false
         });
-        rects.push({
-            x: 75 - 25,
-            y: 50 - 25,
+        gobs.push({
+            x: 450,
+            y: 100,
             width: 30,
             height: 30,
-            fill: "#ff550d",
+            fill: "#ffff00",
+            canDrag: true,
             isDragging: false
         });
-        rects.push({
-            x: 75 - 35,
-            y: 50 - 35,
+        gobs.push({
+            x: 450,
+            y: 175,
             width: 30,
             height: 30,
-            fill: "#800080",
+            fill: "#ffff00",
+            canDrag: true,
             isDragging: false
         });
-        rects.push({
-            x: 75 - 45,
-            y: 50 - 45,
+        gobs.push({
+            x: 450,
+            y: 250,
             width: 30,
             height: 30,
-            fill: "#0c64e8",
+            fill: "#ffff00",
+            canDrag: true,
             isDragging: false
         });
 
@@ -110,8 +114,6 @@
         canvas.onmouseup = myUp;
         canvas.onmousemove = myMove;
 
-        // call to draw the scene
-        draw();
 
         // draw a single rect
         function rect(x, y, w, h) {
@@ -129,11 +131,28 @@
         // redraw the scene
         function draw() {
             clear();
-            ctx.fillStyle = "#FAF7F8";
+            ctx.fillStyle = "#202020";
             rect(0, 0, WIDTH, HEIGHT);
+            ctx.fillStyle = "#808080";
+            rect(400, 0, 100, HEIGHT);
+            ctx.fillStyle = "#505050";
+            rect(100-75, 250-25, 100, 200);
+            rect(200-75, 350-25, 25, 50);
+            rect (200-75, 350-25, 25, 30);
+            rect (250-75, 300-25, 5, 15);
+            rect(250-75, 250-25, 10, 25);
+            rect(300-75, 350-25, 100, 25);
+            rect (250-75, 100-25, 200, 100);
+            rect (375-25, 50-25, 10, 50);
+            rect (110, 50, 15, 150);
+            ctx.fillStyle = "#FF0000";
+            ctx.beginPath();
+            ctx.arc(100, 75, 10, 0, 2 * Math.PI);
+            ctx.fill();
+            
             // redraw each rect in the rects[] array
-            for (var i = 0; i < rects.length; i++) {
-                var r = rects[i];
+            for (var i = 0; i < gobs.length; i++) {
+                var r = gobs[i];
                 ctx.fillStyle = r.fill;
                 rect(r.x, r.y, r.width, r.height);
             }
@@ -153,12 +172,15 @@
 
             // test each rect to see if mouse is inside
             dragok = false;
-            for (var i = 0; i < rects.length; i++) {
-                var r = rects[i];
+            for (var i = 0; i < gobs.length; i++) {
+                var r = gobs[i];
                 if (mx > r.x && mx < r.x + r.width && my > r.y && my < r.y + r.height) {
+                    if (r.canDrag) {
                     // if yes, set that rects isDragging=true
                     dragok = true;
                     r.isDragging = true;
+                    }
+
                 }
             }
             // save the current mouse position
@@ -175,8 +197,13 @@
 
             // clear all the dragging flags
             dragok = false;
-            for (var i = 0; i < rects.length; i++) {
-                rects[i].isDragging = false;
+            for (var i = 0; i < gobs.length; i++) {
+                if (gobs[i].isDragging) {
+                    gobs[i].isDragging = false;
+                    if (gobs[i].x < 400)
+                        gobs[i].canDrag = false;
+                        console.log(`Final pos for goblin ${i}: ${gobs[i].x}, ${gobs[i].y}`)
+                }
             }
         }
 
@@ -202,8 +229,8 @@
                 // move each rect that isDragging 
                 // by the distance the mouse has moved
                 // since the last mousemove
-                for (var i = 0; i < rects.length; i++) {
-                    var r = rects[i];
+                for (var i = 0; i < gobs.length; i++) {
+                    var r = gobs[i];
                     if (r.isDragging) {
                         r.x += dx;
                         r.y += dy;
@@ -219,6 +246,10 @@
 
             }
         }
+
+                // call to draw the scene
+                draw();
+
     </script>
 </body>
 
