@@ -15,6 +15,8 @@ public class Friend : MonoBehaviour
         // Attempting to make the group appear more natural; i.e. not all Friends in a straight line behind the Runner.
         nav = GetComponent<NavMeshAgent>();
         nav.stoppingDistance = Random.Range(3.0f, 6.0f);
+
+        // TODO - Fetch Digit & Assign
     }
 
     void OnTriggerEnter(Collider other)
