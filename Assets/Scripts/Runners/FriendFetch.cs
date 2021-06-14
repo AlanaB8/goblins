@@ -37,6 +37,10 @@ public class FriendFetch : MonoBehaviour
 
         string respBody = await resp.Content.ReadAsStringAsync();
         var results = JObject.Parse(respBody);
+        if (results == null)
+		{
+            return;
+		}
         var features = results["features"].Children();
 
         foreach (var f in features)
