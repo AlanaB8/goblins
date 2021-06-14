@@ -1,0 +1,50 @@
+body {
+    background-image: url('Assets/dark-bg.png');
+    background-size: 100vw 100vh;
+    background-repeat: no-repeat;
+}
+
+h1 {
+    font-family: adhesive-nr-seven, sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 60px;
+    color: white;
+    margin: auto;
+    margin-top: 20px;
+    width: 50%;
+    letter-spacing: .2rem;
+}
+
+.green {
+    color: #00ff00;
+}
+.white {
+    color: white;
+}
+.purple {
+    color: #9b00ff;
+}
+
+.player-change {
+    width: 0; 
+    height: 0; 
+    border-top: 40px solid transparent;
+    border-bottom: 40px solid transparent;
+    background-color: transparent;
+    position: absolute;
+    bottom: 20px;
+    
+}
+
+.player-change.left {
+    border-left: transparent;
+    border-right: 40px solid;
+    left: 20px;
+}
+
+.player-change.right {
+    border-right: transparent;
+    border-left: 40px solid;
+    right: 20px;
+}
