@@ -37,15 +37,22 @@ public class FriendFetch : MonoBehaviour
 
         string respBody = await resp.Content.ReadAsStringAsync();
         var results = JObject.Parse(respBody);
+        if (results == null)
+		{
+            return;
+		}
         var features = results["features"].Children();
 
         foreach (var f in features)
         {
             var attributes = f.SelectToken("attributes");
-            var name       = attributes.SelectToken("friend_name").ToString();
-            var pos_x      = float.Parse(attributes.SelectToken("pos_x").ToString());
-            var pos_y      = float.Parse(attributes.SelectToken("pos_y").ToString());
-            var pos_z      = float.Parse(attributes.SelectToken("pos_z").ToString());
+            var name = attributes.SelectToken("friend_name").ToString();
+            float pos_x = 0.0f;
+            float.TryParse(attributes.SelectToken("pos_x").ToString(), out pos_x);
+            float pos_y = 0.0f;
+            float.TryParse(attributes.SelectToken("pos_y").ToString(), out pos_y);
+            float pos_z = 0.0f;
+            float.TryParse(attributes.SelectToken("pos_z").ToString(), out pos_z);
 
             if (!DoesFriendExist(name))
             {
