@@ -1,4 +1,10 @@
-    
+    /* Tasks:
+    * Load SVG map onto canvas
+    * Rectangles with purple strokes
+    * Add red drone icons, purple exit icon to canvas
+    * Switch yellow rectangles out for little friend pngs
+    * Send custom event: game is ready
+    */
     
     
     // get canvas related references
@@ -16,41 +22,33 @@
 
 
 
-    // an array of objects that define different rectangles
+    // an array of goblin agents
     const gobs = [];
     gobs.push({
-        x: 450,
+        x: 530,
         y: 25,
-        width: 30,
-        height: 30,
-        fill: "#ffff00",
+        found: false,
         canDrag: true,
         isDragging: false
     });
     gobs.push({
-        x: 450,
+        x: 530,
         y: 100,
-        width: 30,
-        height: 30,
-        fill: "#ffff00",
+        found: false,
         canDrag: true,
         isDragging: false
     });
     gobs.push({
-        x: 450,
+        x: 530,
         y: 175,
-        width: 30,
-        height: 30,
-        fill: "#ffff00",
+        found: false,
         canDrag: true,
         isDragging: false
     });
     gobs.push({
-        x: 450,
+        x: 530,
         y: 250,
-        width: 30,
-        height: 30,
-        fill: "#ffff00",
+        found: false,
         canDrag: true,
         isDragging: false
     });
@@ -62,11 +60,15 @@
 
 
     // draw a single rect
-    function rect(x, y, w, h) {
-        ctx.beginPath();
-        ctx.rect(x, y, w, h);
-        ctx.closePath();
-        ctx.fill();
+    function drawGoblin(x, y) {
+        const imgObj = new Image();
+        imgObj.src = 'https://mdn.mozillademos.org/files/5397/rhino.jpg';
+        imgObj.onload = () => {ctx.drawImage(imgObj, x, y);};
+        
+        // ctx.beginPath();
+        // ctx.rect(x, y, w, h);
+        // ctx.closePath();
+        // ctx.fill();
     }
 
     // clear the canvas
@@ -76,21 +78,14 @@
 
     // redraw the scene
     function draw() {
+        const imgObj = new Image();
+        imgObj.src = './map.jpg';
+        ctx.drawImage(imgObj, 250, 250);
+
+
         clear();
         ctx.fillStyle = "#202020";
-        rect(0, 0, WIDTH, HEIGHT);
-        ctx.fillStyle = "#808080";
-        rect(400, 0, 100, HEIGHT);
-        ctx.fillStyle = "#505050";
-        rect(100-75, 250-25, 100, 200);
-        rect(200-75, 350-25, 25, 50);
-        rect (200-75, 350-25, 25, 30);
-        rect (250-75, 300-25, 5, 15);
-        rect(250-75, 250-25, 10, 25);
-        rect(300-75, 350-25, 100, 25);
-        rect (250-75, 100-25, 200, 100);
-        rect (375-25, 50-25, 10, 50);
-        rect (110, 50, 15, 150);
+
         ctx.fillStyle = "#FF0000";
         ctx.beginPath();
         ctx.arc(100, 75, 10, 0, 2 * Math.PI);
@@ -100,7 +95,7 @@
         for (var i = 0; i < gobs.length; i++) {
             var r = gobs[i];
             ctx.fillStyle = r.fill;
-            rect(r.x, r.y, r.width, r.height);
+            drawGoblin(r.x, r.y);
         }
     }
 
