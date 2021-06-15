@@ -16,6 +16,21 @@ h1 {
     letter-spacing: .2rem;
 }
 
+.current-player {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    margin: auto;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+.react-goes-here {
+    display: flex;
+    flex-direction: column;
+    padding: 20%;
+}
+
 .green {
     color: #00ff00;
 }
@@ -34,17 +49,33 @@ h1 {
     background-color: transparent;
     position: absolute;
     bottom: 20px;
-    
 }
 
-.player-change.left {
+.left {
     border-left: transparent;
     border-right: 40px solid;
     left: 20px;
 }
 
-.player-change.right {
+.right {
     border-right: transparent;
     border-left: 40px solid;
     right: 20px;
+}
+
+.input-light {
+
+
+font-family: input-mono, monospace;
+
+font-weight: 300;
+
+font-style: normal;
+
+}
+
+.input-med-light {
+font-family: input-mono,monospace;
+font-weight: 500;
+font-style: italic;
 }

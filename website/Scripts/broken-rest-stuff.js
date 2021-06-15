@@ -1,3 +1,19 @@
+/*
+TO DO:
+* When send button is clicked, post input message
+* When goblin agents are dropped on the map, post locations
+* Once game is being played, frequently get player, agent locations and use them to update the canvas
+* Also: time elapsed (from Unity)
+*/
+
+
+
+
+
+
+
+
+
 //------------------ REST TEST------------------ REST TEST------------------ REST TEST------------------ REST TEST------------------ REST TEST
 
 
@@ -9,11 +25,11 @@
       key: apiKey
     });
 
-    const theUrl = "https://services1.arcgis.com/BteRGjYsGtVEXzaX/arcgis/rest/services/Friend_Information/FeatureServer/0";
+    const testURL = "https://services1.arcgis.com/BteRGjYsGtVEXzaX/arcgis/rest/services/Friend_Information/FeatureServer/0";
 
     function queryFts () {
         arcgisRest.queryFeatures({
-            url: theUrl,
+            url: testURL,
             where: "friend_name = null",
             authentication
         })
@@ -26,7 +42,7 @@
         //     const featureToDelete = [response.features];
 
         //     arcgisRest.deleteFeatures({
-        //         url: theUrl,
+        //         url: testURL,
         //         objectIds: [featureToDelete],
         //         authentication
         //     })
@@ -48,7 +64,7 @@
 //     // then update its attributes,
 //     // and finally delete it from the layer
 //     arcgisRest.addFeatures({
-//       url: theUrl,
+//       url: testURL,
 //       features: [playing_gob],
 //       authentication
 //     })
@@ -75,7 +91,7 @@
 //       };
 
 //       arcgisRest.updateFeatures({
-//         url: theUrl,
+//         url: testURL,
 //         features: [featureToUpdate],
 //         authentication
 //       })
