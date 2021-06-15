@@ -1,68 +1,54 @@
     /* Tasks:
     * Load SVG map onto canvas
+
     * Rectangles with purple strokes
     * Add red drone icons, purple exit icon to canvas
     * Switch yellow rectangles out for little friend pngs
     * Send custom event: game is ready
     */
     
-    
-    // get canvas related references
+    // Canvas Setup
     const canvas = document.querySelector("canvas");
     const ctx = canvas.getContext("2d");
+    const WIDTH = canvas.width;
+    const HEIGHT = canvas.height;
+
     const BB = canvas.getBoundingClientRect();
     const offsetX = BB.left;
     const offsetY = BB.top;
-    const WIDTH = canvas.width;
-    const HEIGHT = canvas.height;
-    // drag related
-    var dragok = false;
-    var startX = 0;
-    var startY = 0;
 
+    canvas.onmousedown = myDown;
+    canvas.onmouseup = myUp;
+    canvas.onmousemove = myMove;
 
+    const dragok = false;
+    const startX = 0;
+    const startY = 0;
 
-    // an array of goblin agents
-    const gobs = [];
-    gobs.push({
+    const agents = [];
+    agents.push({
         x: 530,
         y: 25,
         found: false,
         canDrag: true,
         isDragging: false
     });
-    gobs.push({
-        x: 530,
-        y: 100,
-        found: false,
-        canDrag: true,
-        isDragging: false
-    });
-    gobs.push({
-        x: 530,
-        y: 175,
-        found: false,
-        canDrag: true,
-        isDragging: false
-    });
-    gobs.push({
-        x: 530,
-        y: 250,
-        found: false,
-        canDrag: true,
-        isDragging: false
-    });
+    
 
-    // listen for mouse events
-    canvas.onmousedown = myDown;
-    canvas.onmouseup = myUp;
-    canvas.onmousemove = myMove;
+    /* 
+     * Enemies
+     * Stretch goal: animate their locations on semi-credible paths.
+    const enemies = [];
+    enemies.push({
+        x: 0,
+        y: 0
+    });
+    */
 
-
-    // draw a single rect
+    // draw a goblin
     function drawGoblin(x, y) {
         const imgObj = new Image();
-        imgObj.src = 'https://mdn.mozillademos.org/files/5397/rhino.jpg';
+        imgObj.src = '../images/follower.png';
         imgObj.onload = () => {ctx.drawImage(imgObj, x, y);};
         
         // ctx.beginPath();
@@ -78,12 +64,12 @@
 
     // redraw the scene
     function draw() {
-        const imgObj = new Image();
-        imgObj.src = './map.jpg';
-        ctx.drawImage(imgObj, 250, 250);
-
-
         clear();
+        const map = new Image();
+        map.src = '../images/map.jpg';
+        map.onload = () => {ctx.drawImage(map, 0, 0, 600, 600);};
+
+        // clear();
         ctx.fillStyle = "#202020";
 
         ctx.fillStyle = "#FF0000";
@@ -92,10 +78,9 @@
         ctx.fill();
         
         // redraw each rect in the rects[] array
-        for (var i = 0; i < gobs.length; i++) {
-            var r = gobs[i];
-            ctx.fillStyle = r.fill;
-            drawGoblin(r.x, r.y);
+        for (var i = 0; i < agents.length; i++) {
+            var agent = agents[i];
+            drawGoblin(agent.x, agent.y);
         }
     }
 
