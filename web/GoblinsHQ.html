@@ -1,0 +1,46 @@
+<!doctype html>
+
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+
+        <title>Goblins HQ</title>
+        <meta name="description" content="Controller for Goblins game">
+
+        <link rel="stylesheet" href="https://use.typekit.net/ovn7lqp.css">
+        <link rel="stylesheet" href="GoblinsHQ.css">
+    </head>
+
+    <body>
+        <h1 class="green">Goblins HQ (Location: The <span class="purple">Sewer</span>)</h1>
+        <div class="current-player">
+            <canvas id="canvas" width=800 height=600></canvas>
+            <div id="react_goes_here"> </div>
+        </div>
+        <div class="nav-players">
+            <button class="left player-change green"></button>
+            <button class="right player-change green"></button>    
+        </div>
+
+        <!-- require ArcGIS REST JS libraries from https://unpkg.com -->
+        <script src="https://unpkg.com/@esri/arcgis-rest-request@3.0.0/dist/umd/request.umd.js"></script>
+        <script src="https://unpkg.com/@esri/arcgis-rest-auth@3.0.0/dist/umd/auth.umd.js"></script>
+        <script src="https://unpkg.com/@esri/arcgis-rest-feature-layer@3.0.0/dist/umd/feature-layer.umd.js"></script>
+        <script src="scripts/broken-rest-stuff.js"></script>
+
+
+        <!-- Canvas controller, not React (yet.)
+            Adapted from http://jsfiddle.net/m1erickson/qm9Eb/ -->
+        <script src="scripts/canvas.js"></script>
+
+        <!-- Load React -->
+        <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>  
+        <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+        
+        <!-- React components -->
+        <!-- <script src="Scripts/CurrentPlayer.js"></script> -->
+    
+    </body>
+
+</html>

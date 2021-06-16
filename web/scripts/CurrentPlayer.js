@@ -1,8 +1,5 @@
 
-
 'use strict';
-
-const e = React.createElement;
 
 class CurrentPlayer extends React.Component {
   constructor(props) {
@@ -25,7 +22,7 @@ class CurrentPlayer extends React.Component {
 }
 
 const domContainer = document.querySelector('#react-goes-here');
-ReactDOM.render(e(CurrentPlayer), domContainer);
+ReactDOM.render(<CurrentPlayer />, domContainer);
 
 
 
