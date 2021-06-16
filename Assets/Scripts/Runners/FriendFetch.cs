@@ -7,6 +7,7 @@ using UnityEngine;
 
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using UnityEngine.AI;
 
 public class FriendFetch : MonoBehaviour
 {
@@ -16,9 +17,14 @@ public class FriendFetch : MonoBehaviour
     List<string> friends = new List<string>();
     string serviceURL = "https://services1.arcgis.com/BteRGjYsGtVEXzaX/arcgis/rest/services/Friend_Information/FeatureServer/0";
 
-    async void FixedUpdate()
-    {
+    async void Start()
+	{
         await FetchFriends();
+    }
+
+    async void LateUpdate()
+    {
+
     }
 
     private async Task FetchFriends()
@@ -62,6 +68,19 @@ public class FriendFetch : MonoBehaviour
         }
     }
 
+    private void InitializeParams(GameObject friend, Vector3 target)
+	{
+        //var distanceVec = new Vector3(x, y, z) - transform.position;
+        //transform.position = Vector3.MoveTowards(transform.position, new Vector3(x, y, z), distanceVec.magnitude);
+
+        //transform.position = new Vector3(x, y, z);
+
+        NavMeshAgent agent = friend.GetComponent<NavMeshAgent>();
+        agent.SetDestination(target);
+        //agent.speed = 7.0f;
+        //agent.stoppingDistance = 1.0f;
+    }
+
     private bool DoesFriendExist(string targetName)
     {
         foreach (var friendName in friends)
@@ -81,7 +100,7 @@ public class FriendFetch : MonoBehaviour
 
         newFriend.transform.position = new Vector3(x, y, z);
         newFriend.name = name;
-
+        InitializeParams(newFriend, new Vector3(71.8f, 2.950603f, -20.9f));
         friends.Add(name);
     }
 }

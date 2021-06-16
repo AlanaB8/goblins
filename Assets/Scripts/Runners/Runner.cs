@@ -19,8 +19,13 @@ public class Runner : MonoBehaviour
     HttpClient client = new HttpClient();
     string serviceURL = "https://services1.arcgis.com/BteRGjYsGtVEXzaX/arcgis/rest/services/Runner_Information/FeatureServer/0";
 
-    // Check for user Input, move NavMeshAgent, and update visual cues.
-    void Update()
+	private void Start()
+	{
+
+	}
+
+	// Check for user Input, move NavMeshAgent, and update visual cues.
+	void Update()
     {
         Camera activeCamera = getActiveCamera();
 
@@ -66,7 +71,7 @@ public class Runner : MonoBehaviour
     // Keep the browser controller aware of where Digit is located.
     async void LateUpdate()
     {
-        // TODO - Send Position to ArcGIS Online
+        await UpdatePositionToFS();
     }
 
     // Return active Camera. Not sure why Camera.current wasn't working originally.
@@ -88,6 +93,34 @@ public class Runner : MonoBehaviour
         var attributes = new JObject();
         attributes.Add("discovered", "True");
         attributes.Add("OBJECTID", 1);
+
+        var obj = new JObject();
+        obj.Add("attributes", attributes);
+
+        JArray adds = new JArray(obj);
+        string addsString = JsonConvert.SerializeObject(adds);
+
+        IEnumerable<KeyValuePair<string, string>> payload = new List<KeyValuePair<string, string>>()
+        {
+            new KeyValuePair<string, string>("updates", addsString),
+            new KeyValuePair<string, string>("f", "json")
+        };
+        HttpContent content = new FormUrlEncodedContent(payload);
+
+        HttpResponseMessage resp = await client.PostAsync($"{serviceURL}/applyEdits", content);
+        resp.EnsureSuccessStatusCode();
+        string respBody = await resp.Content.ReadAsStringAsync();
+        var results = JObject.Parse(respBody);
+        Debug.Log(respBody);
+    }
+
+    async Task UpdatePositionToFS()
+    {
+        var attributes = new JObject();
+        attributes.Add("OBJECTID", 1);
+        attributes.Add("pos_x", this.transform.position.x);
+        attributes.Add("pos_y", this.transform.position.y);
+        attributes.Add("pos_z", this.transform.position.z);
 
         var obj = new JObject();
         obj.Add("attributes", attributes);
