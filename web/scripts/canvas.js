@@ -1,92 +1,121 @@
-    /* Tasks:
-    * Load SVG map onto canvas
+/* Tasks:
+* Send custom event when the game is ready
+* Switch to a different script when the game is ready??
+* Get, post goblin locations
+* Refactor mouse events
+*/
 
-    * Rectangles with purple strokes
-    * Add red drone icons, purple exit icon to canvas
-    * Switch yellow rectangles out for little friend pngs
-    * Send custom event: game is ready
-    */
-    
-    // Canvas Setup
-    const canvas = document.querySelector("canvas");
-    const ctx = canvas.getContext("2d");
-    const WIDTH = canvas.width;
-    const HEIGHT = canvas.height;
 
-    const BB = canvas.getBoundingClientRect();
-    const offsetX = BB.left;
-    const offsetY = BB.top;
+// Canvas Setup ----------------------------------------------------------------------
 
-    canvas.onmousedown = myDown;
-    canvas.onmouseup = myUp;
-    canvas.onmousemove = myMove;
+const canvas = document.querySelector("canvas");
+const ctx = canvas.getContext("2d");
+const WIDTH = canvas.width;
+const HEIGHT = canvas.height;
 
-    const dragok = false;
-    const startX = 0;
-    const startY = 0;
+const BB = canvas.getBoundingClientRect();
+const offsetX = BB.left;
+const offsetY = BB.top;
 
-    const agents = [];
-    agents.push({
-        x: 530,
-        y: 25,
-        found: false,
-        canDrag: true,
-        isDragging: false
-    });
-    
+canvas.onmousedown = myDown;
+canvas.onmouseup = myUp;
+canvas.onmousemove = myMove;
 
-    /* 
-     * Enemies
-     * Stretch goal: animate their locations on semi-credible paths.
-    const enemies = [];
-    enemies.push({
-        x: 0,
-        y: 0
-    });
-    */
 
-    // draw a goblin
-    function drawGoblin(x, y) {
-        const imgObj = new Image();
-        imgObj.src = '../images/follower.png';
-        imgObj.onload = () => {ctx.drawImage(imgObj, x, y);};
-        
-        // ctx.beginPath();
-        // ctx.rect(x, y, w, h);
-        // ctx.closePath();
-        // ctx.fill();
-    }
+// Agent Interaction ----------------------------------------------------------------------
 
-    // clear the canvas
-    function clear() {
-        ctx.clearRect(0, 0, WIDTH, HEIGHT);
-    }
+//Agents are the only draggable game elements
+let dragok = false;
+let startX = 0;
+let startY = 0;
 
-    // redraw the scene
-    function draw() {
-        clear();
-        const map = new Image();
-        map.src = '../images/map.jpg';
-        map.onload = () => {ctx.drawImage(map, 0, 0, 600, 600);};
+const agents = [];
+agents.push({
+    canDrag: true,
+    isDragging: false,
+    // These props will be grabbed from the hosted table:
+    x: 700,
+    y: 300,
+    found: false //Must be false at beginning of game
+});
+agents.push({
+    canDrag: true,
+    isDragging: false,
+    // These props will be grabbed from the hosted table:
+    x: 700,
+    y: 400,
+    found: false //Must be false at beginning of game
+});
+agents.push({
+    canDrag: true,
+    isDragging: false,
+    // These props will be grabbed from the hosted table:
+    x: 700,
+    y: 500,
+    found: false //Must be false at beginning of game
+});
+agents.push({
+    canDrag: true,
+    isDragging: false,
+    // These props will be grabbed from the hosted table:
+    x: 700,
+    y: 200,
+    found: false //Must be false at beginning of game
+});
 
-        // clear();
-        ctx.fillStyle = "#202020";
+// handle mousedown events
+function myDown(e) {
 
-        ctx.fillStyle = "#FF0000";
-        ctx.beginPath();
-        ctx.arc(100, 75, 10, 0, 2 * Math.PI);
-        ctx.fill();
-        
-        // redraw each rect in the rects[] array
-        for (var i = 0; i < agents.length; i++) {
-            var agent = agents[i];
-            drawGoblin(agent.x, agent.y);
+    // tell the browser we're handling this mouse event
+    e.preventDefault();
+    e.stopPropagation();
+
+    // get the current mouse position
+    var mx = parseInt(e.clientX - offsetX);
+    var my = parseInt(e.clientY - offsetY);
+
+    // test each rect to see if mouse is inside
+    dragok = false;
+    for (var i = 0; i < agents.length; i++) {
+        var agent = agents[i];
+        if (mx > agent.x && mx < agent.x + 35 && my > agent.y && my < agent.y + 30) {
+            if (agent.canDrag) {
+            // if yes, set that rects isDragging=true
+            dragok = true;
+            agent.isDragging = true;
+            }
+
         }
     }
+    // save the current mouse position
+    startX = mx;
+    startY = my;
+}
 
+// handle mouseup events
+function myUp(e) {
+    // tell the browser we're handling this mouse event
+    e.preventDefault();
+    e.stopPropagation();
 
-    // handle mousedown events
-    function myDown(e) {
+    // clear all the dragging flags
+    dragok = false;
+    for (let i = 0; i < agents.length; i++) {
+        if (agents[i].isDragging) {
+            agents[i].isDragging = false;
+            if (agents[i].x < 600) {
+                agents[i].canDrag = false;
+            console.log(`Final pos for goblin ${i}: ${agents[i].x}, ${agents[i].y}`);
+            //TODO: post new agent location.
+            }
+        }
+    }
+}
+
+// handle mouse moves
+function myMove(e) {
+    // if we're dragging anything...
+    if (dragok) {
 
         // tell the browser we're handling this mouse event
         e.preventDefault();
@@ -96,82 +125,86 @@
         var mx = parseInt(e.clientX - offsetX);
         var my = parseInt(e.clientY - offsetY);
 
-        // test each rect to see if mouse is inside
-        dragok = false;
-        for (var i = 0; i < gobs.length; i++) {
-            var r = gobs[i];
-            if (mx > r.x && mx < r.x + r.width && my > r.y && my < r.y + r.height) {
-                if (r.canDrag) {
-                // if yes, set that rects isDragging=true
-                dragok = true;
-                r.isDragging = true;
-                }
+        // calculate the distance the mouse has moved
+        // since the last mousemove
+        var dx = mx - startX;
+        var dy = my - startY;
 
+        // move each rect that isDragging 
+        // by the distance the mouse has moved
+        // since the last mousemove
+        for (var i = 0; i < agents.length; i++) {
+            var agent = agents[i];
+            if (agent.isDragging) {
+                agent.x += dx;
+                agent.y += dy;
             }
         }
-        // save the current mouse position
+
+        // redraw the scene with the new rect positions
+        draw();
+
+        // reset the starting mouse position for the next mousemove
         startX = mx;
         startY = my;
+
     }
+}
 
+// Drawing ----------------------------------------------------------------------
 
-    // handle mouseup events
-    function myUp(e) {
-        // tell the browser we're handling this mouse event
-        e.preventDefault();
-        e.stopPropagation();
+// Draw icon to the canvas
+function drawIcon(x, y, w, h, src) {
+    const imgObj = new Image();
+    imgObj.src = src;
+    imgObj.onload = () => {ctx.drawImage(imgObj, x, y, w, h);};
+}
 
-        // clear all the dragging flags
-        dragok = false;
-        for (var i = 0; i < gobs.length; i++) {
-            if (gobs[i].isDragging) {
-                gobs[i].isDragging = false;
-                if (gobs[i].x < 400)
-                    gobs[i].canDrag = false;
-                    console.log(`Final pos for goblin ${i}: ${gobs[i].x}, ${gobs[i].y}`)
-            }
+// clear the canvas
+function clear() {
+    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+}
+
+// redraw the scene
+//TODO: enable draws while dragging
+function draw() {
+    clear();
+
+    //Draw background: game map, to scale, and container for agents
+    const map = new Image();
+    map.src = '../images/map.png';
+    map.onload = () => {ctx.drawImage(map, 0, 0, 600, 600);};
+
+    const container = new Image();
+    container.src = '../images/container.png';
+    container.onload = () => {ctx.drawImage(container, 600, 0, 200, 600);};
+
+    //Draw sewer (no movement)
+    drawIcon(212, 509, 45, 45, '../images/sewer.png');
+    
+    //Draw enemies (movement is a stretch goal, likely will simulate it in the canvas rather than requesting data)
+    drawIcon(94, 79, 40, 30, '../images/enemy.png');
+    drawIcon(380, 130, 40, 30, '../images/enemy.png');
+    drawIcon(148, 195, 40, 30, '../images/enemy.png');
+    drawIcon(195, 288, 40, 30, '../images/enemy.png');
+    drawIcon(183, 358, 40, 30, '../images/enemy.png');
+    drawIcon(316, 365, 40, 30, '../images/enemy.png');
+    drawIcon(443, 407, 40, 30, '../images/enemy.png');
+    drawIcon(108, 436, 40, 30, '../images/enemy.png');
+
+    //Draw agents
+    for (let i = 0; i < agents.length; i++) {
+        const agent = agents[i];
+        if (!agent.found) {
+            drawIcon(agent.x, agent.y, 35, 30, '../images/agent.png');
+        } else {
+            drawIcon(agent.x, agent.y, 35, 30, '../images/agent-found.png');
         }
     }
 
+    //If game has entered Stage 2, draw player
 
-    // handle mouse moves
-    function myMove(e) {
-        // if we're dragging anything...
-        if (dragok) {
+}
 
-            // tell the browser we're handling this mouse event
-            e.preventDefault();
-            e.stopPropagation();
-
-            // get the current mouse position
-            var mx = parseInt(e.clientX - offsetX);
-            var my = parseInt(e.clientY - offsetY);
-
-            // calculate the distance the mouse has moved
-            // since the last mousemove
-            var dx = mx - startX;
-            var dy = my - startY;
-
-            // move each rect that isDragging 
-            // by the distance the mouse has moved
-            // since the last mousemove
-            for (var i = 0; i < gobs.length; i++) {
-                var r = gobs[i];
-                if (r.isDragging) {
-                    r.x += dx;
-                    r.y += dy;
-                }
-            }
-
-            // redraw the scene with the new rect positions
-            draw();
-
-            // reset the starting mouse position for the next mousemove
-            startX = mx;
-            startY = my;
-
-        }
-    }
-
-            // call to draw the scene
-            draw();
+// call to draw the scene
+draw();
